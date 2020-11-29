@@ -30,7 +30,7 @@ public class YodafyClienteTCP {
 		try {
 			// Creamos un socket que se conecte a "hist" y "port":
 			//////////////////////////////////////////////////////
-			// socketServicio= ... (Completar)
+			socketServicio = new Socket(host, port);
 			//////////////////////////////////////////////////////			
 			
 			InputStream inputStream = socketServicio.getInputStream();
@@ -42,20 +42,20 @@ public class YodafyClienteTCP {
 			
 			// Enviamos el array por el outputStream;
 			//////////////////////////////////////////////////////
-			// ... .write ... (Completar)
+			outputStream.write(buferEnvio, 0, buferEnvio.length);
 			//////////////////////////////////////////////////////
 			
 			// Aunque le indiquemos a TCP que queremos enviar varios arrays de bytes, sólo
 			// los enviará efectivamente cuando considere que tiene suficientes datos que enviar...
 			// Podemos usar "flush()" para obligar a TCP a que no espere para hacer el envío:
 			//////////////////////////////////////////////////////
-			// ... .flush(); (Completar)
+			outputStream.flush();
 			//////////////////////////////////////////////////////
 			
 			// Leemos la respuesta del servidor. Para ello le pasamos un array de bytes, que intentará
 			// rellenar. El método "read(...)" devolverá el número de bytes leídos.
 			//////////////////////////////////////////////////////
-			// bytesLeidos ... .read... buferRecepcion ; (Completar)
+			bytesLeidos = inputStream.read(buferRecepcion);
 			//////////////////////////////////////////////////////
 			
 			// MOstremos la cadena de caracteres recibidos:
@@ -67,7 +67,7 @@ public class YodafyClienteTCP {
 			// Una vez terminado el servicio, cerramos el socket (automáticamente se cierran
 			// el inpuStream  y el outputStream)
 			//////////////////////////////////////////////////////
-			// ... close(); (Completar)
+			socketServicio.close();
 			//////////////////////////////////////////////////////
 			
 			// Excepciones:

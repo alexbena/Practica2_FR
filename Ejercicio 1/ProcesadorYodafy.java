@@ -49,7 +49,7 @@ public class ProcesadorYodafy {
 			
 			// Lee la frase a Yodaficar:
 			////////////////////////////////////////////////////////
-			// read ... datosRecibidos.. (Completar)
+			bytesRecibidos = inputStream.read(datosRecibidos);
 			////////////////////////////////////////////////////////
 			
 			// Yoda hace su magia:
@@ -62,13 +62,13 @@ public class ProcesadorYodafy {
 			
 			// Enviamos la traducción de Yoda:
 			////////////////////////////////////////////////////////
-			// ... write ... datosEnviar... datosEnviar.length ... (Completar)
+			outputStream.write(datosEnviar, 0, datosEnviar.length);
 			////////////////////////////////////////////////////////
 			
 			
 			
 		} catch (IOException e) {
-			System.err.println("Error al obtener los flujso de entrada/salida.");
+			System.err.println("Error al obtener los flujos de entrada/salida.");
 		}
 
 	}

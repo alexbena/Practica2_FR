@@ -11,7 +11,8 @@ import java.net.Socket;
 public class YodafyServidorIterativo {
 
 	public static void main(String[] args) {
-	
+		ServerSocket serverSocket;
+		Socket socketServicio = null;
 		// Puerto de escucha
 		int port=8989;
 		// array de bytes auxiliar para recibir o enviar datos.
@@ -22,7 +23,7 @@ public class YodafyServidorIterativo {
 		try {
 			// Abrimos el socket en modo pasivo, escuchando el en puerto indicado por "port"
 			//////////////////////////////////////////////////
-			// ...serverSocket=... (completar)
+			serverSocket = new ServerSocket(port);
 			//////////////////////////////////////////////////
 			
 			// Mientras ... siempre!
@@ -30,7 +31,7 @@ public class YodafyServidorIterativo {
 				
 				// Aceptamos una nueva conexión con accept()
 				/////////////////////////////////////////////////
-				// socketServicio=... (completar)
+				socketServicio = serverSocket.accept();
 				//////////////////////////////////////////////////
 				
 				// Creamos un objeto de la clase ProcesadorYodafy, pasándole como 

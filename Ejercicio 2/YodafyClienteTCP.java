@@ -13,7 +13,7 @@ import java.net.UnknownHostException;
 
 public class YodafyClienteTCP {
 
-	public static void main() {
+	public static void main(String[] args) {
 		
 		String send_buffer;
 		String recive_buffer;

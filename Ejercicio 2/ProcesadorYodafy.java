@@ -4,8 +4,6 @@
 //
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -20,10 +18,10 @@ import java.util.Random;
 public class ProcesadorYodafy {
 	// Referencia a un socket para enviar/recibir las peticiones/respuestas
 	private Socket socketServicio;
-	// stream de lectura (por aquí se recibe lo que envía el cliente)
-	private PrintWriter inputStream;
 	// stream de escritura (por aquí se envía los datos al cliente)
-	private BufferedReader outputStream;
+	private PrintWriter outputStream;
+	// stream de lectura (por aquí se recibe lo que envía el cliente)
+	private BufferedReader inputStream;
 	
 	// Para que la respuesta sea siempre diferente, usamos un generador de números aleatorios.
 	private Random random;
@@ -46,12 +44,12 @@ public class ProcesadorYodafy {
 		
 		try {
 			// Obtiene los flujos de escritura/lectura
-			this.inputStream = new PrintWriter(socketServicio.getOutputStream(),true);
-			this.outputStream = new BufferedReader(new InputStreamReader(socketServicio.getInputStream()));
+			this.outputStream = new PrintWriter(socketServicio.getOutputStream(),true);
+			this.inputStream = new BufferedReader(new InputStreamReader(socketServicio.getInputStream()));
 			
 			// Lee la frase a Yodaficar:
 			////////////////////////////////////////////////////////
-			data = outputStream.readLine();
+			data = inputStream.readLine();
 			////////////////////////////////////////////////////////
 			
 			// Yoda hace su magia:
@@ -60,13 +58,11 @@ public class ProcesadorYodafy {
 			response = yodaDo(data);
 
 			// Convertimos el String de respuesta en una array de bytes:
-			inputStream.println(response);
+			outputStream.println(response);
+
 			// Enviamos la traducción de Yoda:
 			////////////////////////////////////////////////////////
 			////////////////////////////////////////////////////////
-			
-			
-			
 		} catch (IOException e) {
 			System.err.println("Error al obtener los flujos de entrada/salida.");
 		}

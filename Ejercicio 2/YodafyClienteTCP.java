@@ -13,7 +13,7 @@ import java.net.UnknownHostException;
 
 public class YodafyClienteTCP {
 
-	public static void main(String[] args) {
+	public static void main() {
 		
 		String send_buffer;
 		String recive_buffer;
@@ -33,7 +33,7 @@ public class YodafyClienteTCP {
 			//////////////////////////////////////////////////////			
 		
 			PrintWriter inputStream = new PrintWriter(socketServicio.getOutputStream(),true);
-        	BufferedReader outputStream = new BufferedReader(new InputStreamReader(socketServicio.getInputStream()));
+        	        BufferedReader outputStream = new BufferedReader(new InputStreamReader(socketServicio.getInputStream()));
 			// Si queremos enviar una cadena de caracteres por un OutputStream, hay que pasarla primero
 			// a un array de bytes:
 			send_buffer="Al monte del volcán debes ir sin demora";
@@ -56,9 +56,6 @@ public class YodafyClienteTCP {
 			recive_buffer = outputStream.readLine();
 			System.out.println("Reader: " + recive_buffer);
 			//////////////////////////////////////////////////////
-			
-			// MOstremos la cadena de caracteres recibidos:
-			System.out.println("Recibido: ");
 			
 			// Una vez terminado el servicio, cerramos el socket (automáticamente se cierran
 			// el inpuStream  y el outputStream)

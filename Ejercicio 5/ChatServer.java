@@ -17,7 +17,6 @@ public class ChatServer{
 			do {
 				SocketClient socketClient = new SocketClient();
 				socketClient.socket = serverSocket.accept();
-				
 				ChatProcessor processor = new ChatProcessor(socketClient);
 				processor.start();
 				

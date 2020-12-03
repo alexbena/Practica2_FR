@@ -22,8 +22,6 @@ public class ChatProcessor extends Thread {
 	}
 
 	void procesa(){
-		SocketClient clientChat = null;
-		Boolean isChatting = false;
 		String data;
 		String response;
 		
@@ -31,9 +29,10 @@ public class ChatProcessor extends Thread {
 			this.outputStream = new PrintWriter(socketClient.socket.getOutputStream(),true);
 			this.inputStream = new BufferedReader(new InputStreamReader(socketClient.socket.getInputStream()));
 			boolean exit = false;
+
 			while(!exit){
 				data = inputStream.readLine();
-
+				System.out.println(data);
 				if(data.contains("1001")){
 					String _name = data.split("\\+")[1];
 					if(ChatServer.getClient(_name) == null){
@@ -44,42 +43,38 @@ public class ChatProcessor extends Thread {
 						sendList();
 					}
 					else{
-						response = "Err";
+						response = "300+NOMBRE_NO_DISPONIBLE";
 						outputStream.println(response);
 					}
 				}
 				if(data.contains("1002")){
-					String _name = data.split("\\+")[1];
-					clientChat = ChatServer.getClient(_name);
+					String _name= data.split("\\+")[1];
+					SocketClient clientChat = ChatServer.getClient(_name);
 					if(clientChat != null){
-						response = "2002";
-						isChatting = true;
+						response = "2002+" + _name;
+						outputStream.println(response);
 					}
 					else{
-						response = "Err";
+						response = "3002+USUARIO_NO_DISPONIBLE";
+						outputStream.println(response);
 					}
-					outputStream.println(response);
+					
 				}
 				if(data.contains("1003")){
-					if(!isChatting){
-						String chatClientName= data.split("\\+")[1];
-						clientChat = ChatServer.getClient(chatClientName);
-						isChatting = true;
-					}
+					String _name= data.split("\\+")[1];
+					SocketClient clientChat = ChatServer.getClient(_name);
 					String message = data.split("\\+")[3];
 					response = "2003+" + socketClient.name + "+" +message;
 					this.chatOutputStream = new PrintWriter(clientChat.socket.getOutputStream(),true);
 					chatOutputStream.println(response);
 				}
+
 				if(data.contains("1004")){
 					sendList();
 				}
+
 				if(data.contains("1005")){
-					if(isChatting){
-						response = "2005+CLOSED";
-						chatOutputStream.println(response);
-					}
-						exit = true;
+					exit = true;
 				}
 			}
 
@@ -98,7 +93,8 @@ public class ChatProcessor extends Thread {
 		ArrayList<String> clientList = ChatServer.getClientList();
 		String response = "2001";
 		for (String clientName : clientList) {
-			response += "+" + clientName;
+			if(!socketClient.name.equals(clientName))
+				response += "+" + clientName;
 		}
 		outputStream.println(response);
 	}

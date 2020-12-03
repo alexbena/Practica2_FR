@@ -7,121 +7,34 @@ import java.net.UnknownHostException;
 import java.util.Scanner;
 
 public class ChatClient{
+	static private PrintWriter outputStream;
+	static private BufferedReader  inputStream;
 
 	public static void main(String[] args) {
 		Scanner input = new Scanner(System.in);
-		String send_buffer, receive_buffer, name;
-		PrintWriter outputStream;
-		BufferedReader  inputStream;
+		String send_buffer, receive_buffer = "", name;
 		String host="localhost";
 		int port=8989;
 		Socket socketService=null;
 
 		try {
-
 			socketService = new Socket(host, port);
-		
 			outputStream = new PrintWriter(socketService.getOutputStream(),true);
 			inputStream = new BufferedReader(new InputStreamReader(socketService.getInputStream()));
 			
-			System.out.println("Introduce tu nombre de usuario: ");
-			name = input.nextLine();
-			send_buffer="1001+" + name;
-			outputStream.println(send_buffer);
-			receive_buffer = inputStream.readLine();
-
+			while(!receive_buffer.contains("200")){
+				System.out.println("Introduce tu nombre de usuario: ");
+				name = input.nextLine();
+				send_buffer="1001+" + name;
+				ChatClient.send(send_buffer);
+				receive_buffer = ChatClient.receive();			
+			}
+			
 			if(receive_buffer.contains("200")){
-				Boolean exit = false;
-				String[] clientsNames = null;
-				int clientSelected = 0;
-
-				while(!exit){
-					receive_buffer = inputStream.readLine();
-
-					if(receive_buffer.contains("2001")){
-						clientsNames = receive_buffer.split("\\+");
-						menu(clientsNames);
-						clientSelected = input.nextInt();
-						input.nextLine(); // Saltamos siguiente liena
-						if(clientSelected == 0){
-							exit =  true;
-						}
-						else if(clientSelected > 0){
-							send_buffer="1002+" + clientsNames[clientSelected] + "+CHAT";
-							outputStream.println(send_buffer);
-						}
-					}
-
-					if(receive_buffer.contains("2002")){
-						Boolean endChat=false;
-						while(!endChat){
-							String message;
-							System.out.println( "@" + name + "(Para cerrar chat introducir -1)");
-							message = input.nextLine();
-							if(message.equals("-1")){
-								endChat = true;
-								send_buffer="1004+CLOSE_CHAT";
-								outputStream.println(send_buffer);
-							}
-							else{
-								send_buffer="1003+" + clientsNames[clientSelected] + "+MESSAGE+" + message;
-								outputStream.println(send_buffer);
-								receive_buffer = inputStream.readLine();
-								if(receive_buffer.contains("2003")){
-									message = receive_buffer.split("\\+")[2];
-									System.out.println("#" + clientsNames[clientSelected] + ": " + message);
-								}
-								else if(receive_buffer.contains("2005")){
-									System.out.println(clientsNames[clientSelected] + " se ha desconectado.");
-									endChat = true;
-								}
-								else
-									System.out.println("Error: Envio de mensaje");
-							}
-						}
-					}
-
-					if(receive_buffer.contains("2003")){
-						String message;
-						message = receive_buffer.split("\\+")[2];
-						String chatClientName = receive_buffer.split("\\+")[1];
-
-						System.out.println("#" + chatClientName + ": " + message);
-						Boolean endChat=false;
-						while(!endChat){
-							System.out.println( "@" + name + "(Para cerrar chat introducir -1)");
-							message = input.nextLine();
-							if(message.equals("-1")){
-								endChat = true;
-								send_buffer="1004+CLOSE_CHAT";
-								outputStream.println(send_buffer);
-							}
-							else{
-								send_buffer="1003+" + chatClientName + "+MESSAGE+" + message;
-								outputStream.println(send_buffer);
-								receive_buffer = inputStream.readLine();
-								if(receive_buffer.contains("2003")){
-									message = receive_buffer.split("\\+")[2];
-									System.out.println("#" + chatClientName + ": " + message);
-								}
-								else if(receive_buffer.contains("2005")){
-									System.out.println(chatClientName + " se ha desconectado.");
-									endChat = true;
-								}
-								else
-									System.out.println("Error: Envio de mensaje");
-							}
-						}
-					}
-
-					if(exit){
-						send_buffer = "1005+BYE";
-						outputStream.println(send_buffer);
-					}
-				}
+				ChatClientReceiver receiver = new ChatClientReceiver();
+				receiver.start();
 			}
 
-			socketService.close();
 		} catch (UnknownHostException e) {
 			System.err.println("Error: Nombre de host no encontrado.");
 		} catch (IOException e) {
@@ -129,15 +42,18 @@ public class ChatClient{
 		}
 	}
 
-	static void menu(String[] clientsNames){
-		int clientNum = 0;
-		System.out.println("###### Selecciona un usuario para chatear ######");
-		for (String name : clientsNames){
-			if(clientNum != 0)
-				System.out.println("###### " + clientNum + ") " + name + " ######");
-			clientNum++;
+	static String receive(){
+		String receive_buffer = "";
+		try {
+			receive_buffer = inputStream.readLine();
+		} catch (IOException e) {
+			System.out.println("Error de entrada/salida al abrir el socket.");
 		}
-		System.out.println("###### " + "-1" + ")"  + " Recargar"  + " ######");
-		System.out.println("###### " + "0" + ")"  + " Salir"  + " ######");
+		return receive_buffer;
 	}
+
+	static synchronized void send(String send_buffer){
+		outputStream.println(send_buffer);
+	}
+
 }

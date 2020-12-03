@@ -34,28 +34,28 @@ public class ChatProcessor extends Thread {
 				data = inputStream.readLine();
 				System.out.println(data);
 				if(data.contains("1001")){
-					String _name = data.split("\\+")[1];
+					String _name = data.split("\\+")[2];
 					if(ChatServer.getClient(_name) == null){
 						socketClient.name = _name;
 						ChatServer.addClient(socketClient);
-						response = "200";
+						response = "200+OK";
 						outputStream.println(response);
 						sendList();
 					}
 					else{
-						response = "300+NOMBRE_NO_DISPONIBLE";
+						response = "300+ERROR+EL NOMBRE DE USUARIO NO ESTA DISPONIBLE";
 						outputStream.println(response);
 					}
 				}
 				if(data.contains("1002")){
-					String _name= data.split("\\+")[1];
+					String _name= data.split("\\+")[2];
 					SocketClient clientChat = ChatServer.getClient(_name);
 					if(clientChat != null){
-						response = "2002+" + _name;
+						response = "2002+CHAT" + _name;
 						outputStream.println(response);
 					}
 					else{
-						response = "3002+USUARIO_NO_DISPONIBLE";
+						response = "3002+ERROR+EL USUARIO NO ESTA DISPONIBLE";
 						outputStream.println(response);
 					}
 					
@@ -63,10 +63,15 @@ public class ChatProcessor extends Thread {
 				if(data.contains("1003")){
 					String _name= data.split("\\+")[1];
 					SocketClient clientChat = ChatServer.getClient(_name);
-					String message = data.split("\\+")[3];
-					response = "2003+" + socketClient.name + "+" +message;
-					this.chatOutputStream = new PrintWriter(clientChat.socket.getOutputStream(),true);
-					chatOutputStream.println(response);
+					if(clientChat != null){
+						String message = data.split("\\+")[3];
+						response = "2003+" + socketClient.name + "+" +message;
+						this.chatOutputStream = new PrintWriter(clientChat.socket.getOutputStream(),true);
+						chatOutputStream.println(response);
+					}
+					else{
+						response = "3003+ERROR+EL USUARIO SE HA DESCONECTADO";
+					}
 				}
 
 				if(data.contains("1004")){
@@ -91,7 +96,7 @@ public class ChatProcessor extends Thread {
 
 	void sendList(){
 		ArrayList<String> clientList = ChatServer.getClientList();
-		String response = "2001";
+		String response = "2001+LISTA";
 		for (String clientName : clientList) {
 			if(!socketClient.name.equals(clientName))
 				response += "+" + clientName;

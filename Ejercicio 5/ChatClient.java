@@ -25,9 +25,11 @@ public class ChatClient{
 			while(!receive_buffer.contains("200")){
 				System.out.println("Introduce tu nombre de usuario: ");
 				name = input.nextLine();
-				send_buffer="1001+" + name;
+				send_buffer="1001+Login" + name;
 				ChatClient.send(send_buffer);
-				receive_buffer = ChatClient.receive();			
+				receive_buffer = ChatClient.receive();
+				if(receive_buffer.contains("300"))		
+					System.out.println(receive_buffer.split("\\+")[1]);	
 			}
 			
 			if(receive_buffer.contains("200")){

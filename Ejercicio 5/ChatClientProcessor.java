@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.Scanner;
 import java.lang.Thread;
 
@@ -32,15 +31,19 @@ public class ChatClientProcessor extends Thread {
                 send_buffer="1004+LISTA";
             }
             else if(clientSelected > 0){
-                send_buffer="1002+" + clientsNames[clientSelected] + "+CHAT";
+                send_buffer="1002+SELECT" + clientsNames[clientSelected];
             }
         }
 
         if(received_message.contains("2002")){
-            String name = received_message.split("\\+")[1];
+            String name = received_message.split("\\+")[2];
             ChatClientSender sender = new ChatClientSender(name);
             sender.start();
             send_buffer = null;
+        }
+
+        if(received_message.contains("3002")){
+            System.out.println(received_message.split("\\+")[1]);
         }
 
         if(received_message.contains("2003")){
@@ -48,6 +51,10 @@ public class ChatClientProcessor extends Thread {
             message = received_message.split("\\+")[2];
             String name = received_message.split("\\+")[1];
             System.out.println("#" + name + ": " + message);
+        }
+
+        if(received_message.contains("3003")){
+            System.out.println(received_message.split("\\+")[1]);
         }
         
         if(send_buffer != null)
@@ -58,7 +65,7 @@ public class ChatClientProcessor extends Thread {
 		int clientNum = 0;
 		System.out.println("###### Selecciona un usuario para chatear ######");
 		for (String name : clientsNames){
-			if(clientNum != 0)
+			if(clientNum > 1)
 				System.out.println("###### " + clientNum + ") " + name + " ######");
 			clientNum++;
 		}

@@ -9,13 +9,14 @@ import java.util.Scanner;
 public class ChatClient{
 	static private PrintWriter outputStream;
 	static private BufferedReader  inputStream;
+	static private Socket socketService=null;
 
 	public static void main(String[] args) {
 		Scanner input = new Scanner(System.in);
 		String send_buffer, receive_buffer = "", name;
 		String host="localhost";
 		int port=8989;
-		Socket socketService=null;
+		socketService=null;
 
 		try {
 			socketService = new Socket(host, port);
@@ -56,6 +57,14 @@ public class ChatClient{
 
 	static synchronized void send(String send_buffer){
 		outputStream.println(send_buffer);
+	}
+
+	static void close(){
+		try {
+			socketService.close();
+		} catch (IOException e) {
+			System.out.println("ERROR al cerrar server");
+		}
 	}
 
 }

@@ -32,7 +32,7 @@ public class ChatProcessor extends Thread {
 
 			while(!exit){
 				data = inputStream.readLine();
-				System.out.println(data);
+
 				if(data.contains("1001")){
 					String _name = data.split("\\+")[2];
 					if(ChatServer.getClient(_name) == null){
@@ -71,6 +71,7 @@ public class ChatProcessor extends Thread {
 					}
 					else{
 						response = "3003+ERROR+EL USUARIO SE HA DESCONECTADO";
+						outputStream.println(response);
 					}
 				}
 
@@ -79,6 +80,8 @@ public class ChatProcessor extends Thread {
 				}
 
 				if(data.contains("1005")){
+					response = "2005+BYE";
+					outputStream.println(response);
 					exit = true;
 				}
 			}

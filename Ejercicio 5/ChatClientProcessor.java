@@ -43,7 +43,7 @@ public class ChatClientProcessor extends Thread {
         }
 
         if(received_message.contains("3002")){
-            System.out.println(received_message.split("\\+")[1]);
+            System.out.println(received_message.split("\\+")[2]);
         }
 
         if(received_message.contains("2003")){
@@ -54,7 +54,7 @@ public class ChatClientProcessor extends Thread {
         }
 
         if(received_message.contains("3003")){
-            System.out.println(received_message.split("\\+")[1]);
+            System.out.println(received_message.split("\\+")[2]);
         }
         
         if(send_buffer != null)

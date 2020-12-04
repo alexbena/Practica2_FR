@@ -2,10 +2,16 @@ public class ChatClientReceiver extends Thread{
     @Override
     public void run() {
         String receive_buffer;
-        while(true){
+        Boolean exit = false;
+        while(!exit){
             receive_buffer = ChatClient.receive();
-            ChatClientProcessor processor = new ChatClientProcessor(receive_buffer);
-            processor.start();
+            if(!receive_buffer.contains("2005")){
+                ChatClientProcessor processor = new ChatClientProcessor(receive_buffer);
+                processor.start();
+            }
+            else
+                exit = true;
         }
+        ChatClient.close();
     }
 }

@@ -51,7 +51,7 @@ public class ChatProcessor extends Thread {
 					String _name= data.split("\\+")[2];
 					SocketClient clientChat = ChatServer.getClient(_name);
 					if(clientChat != null){
-						response = "2002+CHAT" + _name;
+						response = "2002+CHAT+" + _name;
 						outputStream.println(response);
 					}
 					else{

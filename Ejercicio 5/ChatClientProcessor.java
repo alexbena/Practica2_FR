@@ -31,7 +31,7 @@ public class ChatClientProcessor extends Thread {
                 send_buffer="1004+LISTA";
             }
             else if(clientSelected > 0){
-                send_buffer="1002+SELECT" + clientsNames[clientSelected];
+                send_buffer="1002+SELECT+" + clientsNames[clientSelected];
             }
         }
 
